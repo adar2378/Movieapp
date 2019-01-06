@@ -7,13 +7,13 @@ import 'movie.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+import 'main.dart';
 import 'dart:core';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_image/network.dart';
+import 'backDropRec.dart';
 
 class MovieList extends StatefulWidget {
-  bool showBottomNav;
-  MovieList(this.showBottomNav);
   @override
   _MovieListState createState() => _MovieListState();
 }
@@ -62,9 +62,6 @@ class _MovieListState extends State<MovieList>
     return GestureDetector(
       //onTap: () => Details(movie: movie)
       onTap: () {
-        setState(() {
-          widget.showBottomNav = false;
-        });
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -174,6 +171,7 @@ class _MovieListState extends State<MovieList>
                       color: Colors.black54),
                   textAlign: TextAlign.start,
                 ),
+                SizedBox(height: 8,),
                 Container(
                   height: 2,
                   decoration: BoxDecoration(boxShadow: [
@@ -190,8 +188,8 @@ class _MovieListState extends State<MovieList>
                         AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.hasError)
                         return new Text('Error: ${snapshot.error}');
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.waiting:
+                      switch (snapshot.hasData) {
+                        case false:
                           return new Text('Loading...');
                         default:
                           return Container(
@@ -203,31 +201,45 @@ class _MovieListState extends State<MovieList>
                               children: snapshot.data.documents
                                   .map((DocumentSnapshot document) {
                                 Movie movie = new Movie();
-                                return Container(
-                                  height: 120,
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 16),
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => BackDropRec(
+                                                document: document,
+                                              )),
+                                    );
+                                  },
                                   child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(8),
-                                        boxShadow: [
-                                          BoxShadow(
-                                              color: Colors.black12,
-                                              offset: Offset(0, 8),
-                                              blurRadius: 10)
-                                        ]),
-                                    child: Center(
-                                      child: ListTile(
-                                        title: Text(document['Title']),
-                                        leading: Image.network(
-                                          document['Poster'].toString(),
-                                          height: 80,
-                                          fit: BoxFit.cover,
-                                        ),
-                                        subtitle: Text(
-                                          document['Overview'],
-                                          maxLines: 3,
+                                    height: 120,
+                                    margin: EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 16),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black12,
+                                                offset: Offset(0, 8),
+                                                blurRadius: 10)
+                                          ]),
+                                      child: Center(
+                                        child: ListTile(
+                                          title: Text(document['Title']),
+                                          leading: Hero(
+                                            tag: document['Id'],
+                                            child: Image.network(
+                                            document['Poster'].toString(),
+                                            height: 80,
+                                            fit: BoxFit.cover,
+                                          ),),
+                                          subtitle: Text(
+                                            document['Overview'],
+                                            maxLines: 3,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -469,7 +481,6 @@ class DetailsState extends State<Details> {
       body: Stack(
         alignment: AlignmentDirectional.bottomStart,
         children: <Widget>[
-          
           Container(
             height: MediaQuery.of(context).size.height,
             child: Hero(
@@ -481,8 +492,11 @@ class DetailsState extends State<Details> {
             ),
           ),
           Container(
-              height: 50,
-              child: Text("data",style: TextStyle(color: Colors.white),),
+            height: 50,
+            child: Text(
+              "data",
+              style: TextStyle(color: Colors.white),
+            ),
           ),
           FutureBuilder(
             future: _details,
@@ -558,8 +572,6 @@ class DetailsState extends State<Details> {
               }
             },
           ),
-          
-          
         ],
       ),
     );

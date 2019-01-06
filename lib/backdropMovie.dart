@@ -6,7 +6,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
 
-
 class BackDropDetails extends StatefulWidget {
   final Movie movie;
   const BackDropDetails({Key key, this.movie}) : super(key: key);
@@ -21,7 +20,6 @@ class _BackDropDetailsState extends State<BackDropDetails>
 
   @override
   void initState() {
-    
     super.initState();
     _details = fetchExtraDetails();
     _controller = new AnimationController(
@@ -43,13 +41,12 @@ class _BackDropDetailsState extends State<BackDropDetails>
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-       
         body: new LayoutBuilder(
-          builder: _buildStack,
-        ));
+      builder: _buildStack,
+    ));
   }
 
-  static const _PANEL_HEADER_HEIGHT = 64.0;
+  static const _PANEL_HEADER_HEIGHT = 54.0;
 
   Widget _buildStack(BuildContext context, BoxConstraints constraints) {
     final Animation<RelativeRect> animation = _getPanelAnimation(constraints);
@@ -78,7 +75,7 @@ class _BackDropDetailsState extends State<BackDropDetails>
               icon: Icon(Icons.arrow_back),
               color: Colors.white,
               iconSize: 28,
-              onPressed: (){
+              onPressed: () {
                 Navigator.pop(context);
               },
             ),
@@ -117,10 +114,8 @@ class _BackDropDetailsState extends State<BackDropDetails>
                               ],
                             )),
                         Expanded(
-
                           flex: 1,
                           child: Column(
-                            
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               Text(
@@ -208,7 +203,7 @@ class _BackDropDetailsState extends State<BackDropDetails>
     final double top = height - _PANEL_HEADER_HEIGHT;
     final double bottom = -_PANEL_HEADER_HEIGHT;
     return new RelativeRectTween(
-      begin: new RelativeRect.fromLTRB(0.0, top, 0.0, bottom*2),
+      begin: new RelativeRect.fromLTRB(0.0, top, 0.0, bottom * 2),
       end: new RelativeRect.fromLTRB(0.0, height / 10, 0.0, 0.0),
     ).animate(new CurvedAnimation(parent: _controller, curve: Curves.linear));
   }

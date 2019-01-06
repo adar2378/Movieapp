@@ -112,16 +112,30 @@ class _FireBaseDBState extends State<FireBaseDB> {
                     SizedBox(
                       height: 8,
                     ),
-                    RaisedButton(
-                      child: Text("Search"),
-                      color: Colors.green,
-                      onPressed: () {
-                        setState(() {
-                          searchQuery = myController.text;
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        RaisedButton(
+                          child: Text("Search"),
+                          color: Colors.green,
+                          onPressed: () {
+                            setState(() {
+                              searchQuery = myController.text;
 //                    fetchQueryResult();
-                          _result = fetchQueryResult();
-                        });
-                      },
+                              _result = fetchQueryResult();
+                            });
+                          },
+                        ),
+                        RaisedButton(
+                          child: Text("Clear"),
+                          color: Colors.red.shade400,
+                          onPressed: () {
+                            setState(() {
+                              myController.clear();
+                            });
+                          },
+                        ),
+                      ],
                     ),
                     SizedBox(
                       height: 6,
@@ -174,7 +188,7 @@ class _FireBaseDBState extends State<FireBaseDB> {
       },
       child: Container(
         height: 120,
-        margin: EdgeInsets.fromLTRB(12,16,12,16),
+        margin: EdgeInsets.fromLTRB(12, 16, 12, 16),
         child: Container(
           decoration: BoxDecoration(
               color: Colors.white,
@@ -230,9 +244,10 @@ class _FireBaseDBState extends State<FireBaseDB> {
         year = imdbResponseBody['Year'];
         List<dynamic> ratingList = imdbResponseBody['Ratings'];
         imdbRating = ratingList[0]['Value'];
-        print(imdbRating +" "+"${ratingList.length}");
-        
-        rottenTomatoRating = ratingList.length<=1 ? "" : ratingList[1]['Value'] ;
+        print(imdbRating + " " + "${ratingList.length}");
+
+        rottenTomatoRating =
+            ratingList.length <= 1 ? "" : ratingList[1]['Value'];
         awards = imdbResponseBody['Awards'];
       }
       data = <String, String>{

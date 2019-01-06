@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/movielist.dart';
 import 'firebaseTexter.dart';
 
+
 void main() => runApp(MyApp());
 
-bool showBottomNavBar=true;
-
 class MyApp extends StatefulWidget {
+  static bool showBottomNavBar = true;
   @override
   MyAppState createState() {
     return new MyAppState();
@@ -22,7 +22,7 @@ class MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    //showBottomNavBar = true;
+    MyApp.showBottomNavBar = true;
     // TODO: implement initState
     //currentTab = 0;
 
@@ -34,7 +34,7 @@ class MyAppState extends State<MyApp> {
   Widget _page(int index) {
     switch (index) {
       case 0:
-        return MovieList(showBottomNavBar);
+        return MovieList();
       case 1:
         return FireBaseDB();
     }
@@ -50,10 +50,13 @@ class MyAppState extends State<MyApp> {
           child: Opacity(
             opacity: currentTab == index ? 1.0 : 0.0,
             child: Navigator(
+              observers: [
+                HeroController()
+              ], //need to add this observer if you're using any other navigator rather than the default one. other wise the hero animation will not work.
               onGenerateRoute: (RouteSettings settings) {
                 return MaterialPageRoute(
                   builder: (context) => _page(index),
-                  settings: settings
+                  settings: settings,
                 );
               },
             ),
@@ -63,13 +66,40 @@ class MyAppState extends State<MyApp> {
     );
   }
 
+  Widget _getNavBar() {
+    return Theme(
+      data: ThemeData(
+        canvasColor: Colors.grey.shade400,
+      ),
+      child: Opacity(
+        opacity: 1,
+        child: BottomNavigationBar(
+          fixedColor: Colors.green.shade500,
+          currentIndex: currentTab,
+          onTap: (int index) {
+            setState(() {
+              currentTab = index;
+            });
+          },
+          type: BottomNavigationBarType.fixed,
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+                icon: Icon(Icons.movie), title: Text("Home")),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.search), title: Text("Search"))
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: true,
       title: 'Flutter Demo',
       theme: ThemeData(
-      
+
           // This is the theme of your application.
           //
           // Try running your application with "flutter run". You'll see the
@@ -83,34 +113,10 @@ class MyAppState extends State<MyApp> {
           primarySwatch: Colors.blue,
           fontFamily: "Product San"),
       home: Scaffold(
-        
         resizeToAvoidBottomPadding: false,
         backgroundColor: Colors.white,
         body: _body(),
-        bottomNavigationBar: showBottomNavBar?Theme(
-          data: ThemeData(
-            canvasColor: Colors.grey.shade400,
-          ),
-          child: Opacity(
-            opacity: 1,
-            child: BottomNavigationBar(
-              fixedColor: Colors.green,
-              currentIndex: currentTab,
-              onTap: (int index) {
-                setState(() {
-                  currentTab = index;
-                });
-              },
-              type: BottomNavigationBarType.fixed,
-              items: <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.movie), title: Text("Home")),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.search), title: Text("Search"))
-              ],
-            ),
-          ),
-        ) : null,
+        bottomNavigationBar: _getNavBar(),
       ),
     );
   }
