@@ -1,7 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/movielist.dart';
 import 'firebaseTexter.dart';
-
 
 void main() => runApp(MyApp());
 
@@ -62,6 +62,7 @@ class MyAppState extends State<MyApp> {
             ),
           ),
         );
+        
       }),
     );
   }
@@ -71,24 +72,22 @@ class MyAppState extends State<MyApp> {
       data: ThemeData(
         canvasColor: Colors.grey.shade400,
       ),
-      child: Opacity(
-        opacity: 1,
-        child: BottomNavigationBar(
-          fixedColor: Colors.green.shade500,
-          currentIndex: currentTab,
-          onTap: (int index) {
-            setState(() {
-              currentTab = index;
-            });
-          },
-          type: BottomNavigationBarType.fixed,
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-                icon: Icon(Icons.movie), title: Text("Home")),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.search), title: Text("Search"))
-          ],
-        ),
+      child: CupertinoTabBar(
+        iconSize: 24,
+        activeColor: Colors.white,
+        inactiveColor: Colors.white54,
+        backgroundColor: Colors.black45,
+        currentIndex: currentTab,
+        onTap: (int index) {
+          setState(() {
+            currentTab = index;
+          });
+        },
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.movie), title: Text("Home")),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.search), title: Text("Search"))
+        ],
       ),
     );
   }
@@ -118,6 +117,33 @@ class MyAppState extends State<MyApp> {
         body: _body(),
         bottomNavigationBar: _getNavBar(),
       ),
+    );
+  }
+}
+
+class InkinoBottomBar extends StatelessWidget {
+  InkinoBottomBar({
+    @required this.currentIndex,
+    @required this.onTap,
+    @required this.items,
+  });
+
+  final int currentIndex;
+  final ValueChanged<int> onTap;
+  final List<BottomNavigationBarItem> items;
+
+  @override
+  Widget build(BuildContext context) {
+    /// Yes - I'm using CupertinoTabBar on both Android and iOS. It looks dope.
+    /// I'm not a designer and only God can judge me. (╯°□°）╯︵ ┻━┻
+    return CupertinoTabBar(
+      backgroundColor: Colors.black54,
+      inactiveColor: Colors.white54,
+      activeColor: Colors.white,
+      iconSize: 24.0,
+      currentIndex: currentIndex,
+      onTap: onTap,
+      items: items,
     );
   }
 }
