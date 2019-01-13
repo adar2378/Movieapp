@@ -16,7 +16,7 @@ List colors = [Colors.black, Colors.blue.shade900, Colors.yellow.shade900, Color
 Random random = new Random();
 
 
-class _WatchedMovieState extends State<WatchedMovie> {
+class _WatchedMovieState extends State<WatchedMovie> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     double maxheight = MediaQuery.of(context).size.height;
@@ -41,6 +41,7 @@ class _WatchedMovieState extends State<WatchedMovie> {
                 constraints:
                     BoxConstraints(maxHeight: maxheight - maxheight / 5),
                 child: new ListView(
+                  padding: EdgeInsets.symmetric(vertical: 16),
                   scrollDirection: Axis.vertical,
                   //shrinkWrap: true,
                   children: snapshot.data.documents
@@ -103,4 +104,8 @@ class _WatchedMovieState extends State<WatchedMovie> {
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
