@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/firebaseTexter.dart';
 import 'package:movie_app/newMovieList.dart';
 import 'userSelector.dart';
+import 'SoundBox.dart';
 import 'watchedMovie.dart';
 
 void main() => runApp(MyApp());
@@ -80,9 +81,7 @@ class _MyAppState extends State<MyApp>
         children: <Widget>[
           NewMovieList("user2"),
           WatchedMovie("user2"),
-          Container(
-            child: Text("data"),
-          ),
+          SoundBox(),
           FireBaseDB("user2"),
         ],
       ),
