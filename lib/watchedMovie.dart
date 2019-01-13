@@ -13,10 +13,19 @@ class WatchedMovie extends StatefulWidget {
 }
 
 List colors = [Colors.black, Colors.blue.shade900, Colors.yellow.shade900, Colors.brown.shade900];
-Random random = new Random();
+Random random;
+
+
 
 
 class _WatchedMovieState extends State<WatchedMovie> with AutomaticKeepAliveClientMixin {
+
+@override
+  void initState() {
+    random = new Random();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double maxheight = MediaQuery.of(context).size.height;
