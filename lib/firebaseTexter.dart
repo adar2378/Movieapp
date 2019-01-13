@@ -8,13 +8,15 @@ import 'movie.dart';
 import 'package:flutter_image/network.dart';
 
 class FireBaseDB extends StatefulWidget {
+  String userName;
+  FireBaseDB(this.userName);
   @override
   _FireBaseDBState createState() => _FireBaseDBState();
 }
 
 class _FireBaseDBState extends State<FireBaseDB> {
-  final CollectionReference documentReference =
-      Firestore.instance.collection("user1");
+  CollectionReference documentReference = null;
+
   final myController = TextEditingController();
   String searchQuery;
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
@@ -63,28 +65,29 @@ class _FireBaseDBState extends State<FireBaseDB> {
   Future _result;
   @override
   void initState() {
+    documentReference = Firestore.instance.collection(widget.userName);
     // TODO: implement initState
     super.initState();
     _result = fetchQueryResult();
-    fetchData();
+    //fetchData();
   }
 
-  fetchData() async {
-    final snapshot = await Firestore.instance
-        .collection('user1')
-        .snapshots(); //getting the collection instance
-    subscription = snapshot.listen((data) {
-      //listening to data changes inside that collection
-      print("printing");
+  // fetchData() async {
+  //   final snapshot = await Firestore.instance
+  //       .collection('user1')
+  //       .snapshots(); //getting the collection instance
+  //   subscription = snapshot.listen((data) {
+  //     //listening to data changes inside that collection
+  //     print("printing");
 
-      for (int i = 0; i < data.documents.length; i++) {
-        Map<String, dynamic> list = data.documents
-            .elementAt(i)
-            .data; // accessing each documents inside the collection path.
-        print(list['Title']); //printing the value of the 'Title'
-      }
-    });
-  }
+  //     for (int i = 0; i < data.documents.length; i++) {
+  //       Map<String, dynamic> list = data.documents
+  //           .elementAt(i)
+  //           .data; // accessing each documents inside the collection path.
+  //       print(list['Title']); //printing the value of the 'Title'
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +99,7 @@ class _FireBaseDBState extends State<FireBaseDB> {
               height: MediaQuery.of(context).size.height,
               color: Colors.white,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 32, 0, 0),
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
@@ -144,8 +147,8 @@ class _FireBaseDBState extends State<FireBaseDB> {
                       height: 2,
                       decoration: BoxDecoration(boxShadow: [
                         BoxShadow(
-                            color: Colors.black54,
-                            offset: Offset(0, 1),
+                            color: Colors.black26,
+                            offset: Offset(0, 4),
                             blurRadius: .5)
                       ]),
                     ),
@@ -199,9 +202,15 @@ class _FireBaseDBState extends State<FireBaseDB> {
               ]),
           child: Center(
             child: ListTile(
-              title: Text(s['title']),
-              leading: Image.network(
-                "http://image.tmdb.org/t/p/w500/" + s['poster_path'].toString(),
+              title: Text(
+                s['title'],
+                maxLines: 1,
+              ),
+              leading: Image(
+                image: NetworkImageWithRetry(
+                  "http://image.tmdb.org/t/p/w500/" +
+                      s['poster_path'].toString(),
+                ),
                 height: 80,
                 fit: BoxFit.cover,
               ),
@@ -227,13 +236,14 @@ class _FireBaseDBState extends State<FireBaseDB> {
       List<dynamic> genres = jsonResponse['genres'];
       String genre = "";
       for (int i = 0; i < genres.length; i++) {
-        if (genre.length - 1 == i) {
+        if (genres.length - 1 == i) {
           genre = genre + genres[i]['name'];
         } else {
           genre = genre + genres[i]['name'] + ", ";
         }
         //  print("Genre" + genres[i]['name']);  http://www.omdbapi.com/?i=tt0295297&apikey=672fff09
       }
+      print(genre);
       String imdbRating = "", rottenTomatoRating = "", year = "", awards = "";
       final imdbResponse = await http.get("http://www.omdbapi.com/?i=" +
           jsonResponse['imdb_id'] +
@@ -263,6 +273,7 @@ class _FireBaseDBState extends State<FireBaseDB> {
         "Awards": awards,
         "ImdbRating": imdbRating,
         "RottenTomatoes": rottenTomatoRating,
+        "Watched": "false"
       };
     }
 
@@ -333,7 +344,7 @@ class _ItemListState extends State<ItemList> {
         if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
-            return new Text('Loading...');
+          //return new Text('Loading...');
           default:
             return new ListView(
               children:

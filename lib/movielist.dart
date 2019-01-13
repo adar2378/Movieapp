@@ -190,7 +190,7 @@ class _MovieListState extends State<MovieList>
                         return new Text('Error: ${snapshot.error}');
                       switch (snapshot.hasData) {
                         case false:
-                          return new Text('Loading...');
+                          return new Text('Loading Movies...');
                         default:
                           return Container(
                             constraints: BoxConstraints(
