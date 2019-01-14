@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:swipedetector/swipedetector.dart';
 
 import 'dart:core';
@@ -18,11 +17,13 @@ class BackDropRec extends StatefulWidget {
 class _BackDropRecState extends State<BackDropRec>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   AnimationController _controller;
-
+  IconData expandIcon;
+  bool up;
   @override
   void initState() {
     super.initState();
-
+    expandIcon = Icons.expand_more;
+    up = false;
     _controller = new AnimationController(
         duration: const Duration(milliseconds: 500), value: -1.0, vsync: this);
   }
@@ -51,13 +52,20 @@ class _BackDropRecState extends State<BackDropRec>
 
   Widget _buildStack(BuildContext context, BoxConstraints constraints) {
     final Animation<RelativeRect> animation = _getPanelAnimation(constraints);
-    final ThemeData theme = Theme.of(context);
     return new Container(
       //color: Colors.white,
       child: new Stack(
         children: <Widget>[
           GestureDetector(
             onTap: () {
+              setState(() {
+                up = !up;
+                if (!up) {
+                  expandIcon = Icons.expand_more;
+                } else {
+                  expandIcon = Icons.expand_less;
+                }
+              });
               _controller.fling(velocity: _isPanelVisible ? -1.0 : 1.0);
             },
             child: Hero(
@@ -85,9 +93,25 @@ class _BackDropRecState extends State<BackDropRec>
             rect: animation,
             child: SwipeDetector(
               onSwipeUp: () {
+                setState(() {
+                  up = !up;
+                  if (!up) {
+                    expandIcon = Icons.expand_more;
+                  } else {
+                    expandIcon = Icons.expand_less;
+                  }
+                });
                 _controller.fling(velocity: _isPanelVisible ? -1.0 : 1.0);
               },
               onSwipeDown: () {
+                setState(() {
+                  up = !up;
+                  if (!up) {
+                    expandIcon = Icons.expand_more;
+                  } else {
+                    expandIcon = Icons.expand_less;
+                  }
+                });
                 _controller.fling(velocity: _isPanelVisible ? -1.0 : 1.0);
               },
               swipeConfiguration: SwipeConfiguration(
@@ -111,16 +135,24 @@ class _BackDropRecState extends State<BackDropRec>
                     child: Column(children: <Widget>[
                       Container(
                           height: _PANEL_HEADER_HEIGHT,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              Text(
-                                "IMDB: ${widget.document['ImdbRating']}",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              Text("${widget.document['Runtime']} mins",
-                                  style: TextStyle(color: Colors.white))
-                            ],
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                Text(
+                                  "IMDB\n${widget.document['ImdbRating']}",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                
+                                Icon(
+                                  expandIcon,
+                                  color: Colors.white,
+                                ),
+                                
+                                Text("${widget.document['Runtime']} mins",
+                                    style: TextStyle(color: Colors.white))
+                              ],
+                            ),
                           )),
                       Expanded(
                         flex: 1,
@@ -131,17 +163,30 @@ class _BackDropRecState extends State<BackDropRec>
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 4),
-                                child: Text(
-                                  widget.document['Title'],
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 24,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 4),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: <Widget>[
+                                      Text(
+                                        widget.document['Title'],
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 24,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      Text(
+                                        " ("+widget.document['Date']+")",
+                                        style: TextStyle(
+                                          color: Colors.white54,
+                                          fontSize: 18,
+                                          fontStyle: FontStyle.italic
+                                        ),
+                                        
+                                      ),
+                                    ],
+                                  )),
                               Container(
                                 width: MediaQuery.of(context).size.width,
                                 padding:
@@ -159,7 +204,7 @@ class _BackDropRecState extends State<BackDropRec>
                               Container(
                                 width: MediaQuery.of(context).size.width,
                                 child: Text(
-                                  "( " + widget.document['Genre'] + " )",
+                                  ("( " + widget.document['Genre'] + " )"),
                                   style: TextStyle(
                                       color: Colors.white70,
                                       fontSize: 12,
@@ -221,6 +266,5 @@ class _BackDropRecState extends State<BackDropRec>
   }
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }

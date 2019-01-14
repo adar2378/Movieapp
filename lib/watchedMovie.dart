@@ -84,7 +84,7 @@ class _WatchedMovieState extends State<WatchedMovie> with AutomaticKeepAliveClie
                               title: Text(
                                 document['Title'],
                                 style:
-                                    TextStyle(color: colors[random.nextInt(4)]),
+                                    TextStyle(color: colors[3]),
                               ),
                               leading: Hero(
                                 tag: document['Id'],

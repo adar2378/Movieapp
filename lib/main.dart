@@ -12,8 +12,7 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp>
-    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   TabController tabController;
   double fracH;
   String titlebar;
@@ -59,7 +58,7 @@ class _MyAppState extends State<MyApp>
         debugShowCheckedModeBanner: true,
         title: 'Flutter Demo',
         theme: ThemeData(
-            canvasColor: Colors.blue.shade100,
+            canvasColor: Colors.transparent,
             primarySwatch: Colors.blue,
             fontFamily: "Product San"),
         home: getMenu());
@@ -74,7 +73,7 @@ class _MyAppState extends State<MyApp>
           style: TextStyle(color: Colors.black),
         ),
       ),
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomPadding: true,
       backgroundColor: Colors.white,
       body: TabBarView(
         controller: tabController,
@@ -120,10 +119,6 @@ class _MyAppState extends State<MyApp>
       ),
     );
   }
-
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 }
 
 // import 'package:flutter/cupertino.dart';

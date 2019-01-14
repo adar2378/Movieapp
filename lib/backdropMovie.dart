@@ -50,7 +50,6 @@ class _BackDropDetailsState extends State<BackDropDetails>
 
   Widget _buildStack(BuildContext context, BoxConstraints constraints) {
     final Animation<RelativeRect> animation = _getPanelAnimation(constraints);
-    final ThemeData theme = Theme.of(context);
     return new Container(
       color: Colors.white,
       child: new Stack(

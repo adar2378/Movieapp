@@ -4,11 +4,10 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
-import 'movie.dart';
 import 'package:flutter_image/network.dart';
 
 class FireBaseDB extends StatefulWidget {
-  String userName;
+  final String userName;
   FireBaseDB(this.userName);
   @override
   _FireBaseDBState createState() => _FireBaseDBState();
@@ -19,22 +18,24 @@ class _FireBaseDBState extends State<FireBaseDB> {
 
   final myController = TextEditingController();
   String searchQuery;
-  final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
-  StreamSubscription<QuerySnapshot> subscription;
 
   _showSnackbar(String s) {
     final snackbar = new SnackBar(
       //it notifes if the movie was added successfully
       content: Text("$s was added!"),
-      duration: Duration(seconds: 2),
+
+      duration: Duration(
+        milliseconds: 1500,
+      ),
     );
-    _scaffoldkey.currentState.showSnackBar(snackbar);
+    Scaffold.of(context).showSnackBar(snackbar);
   }
 
   @override
   void dispose() {
     // Clean up the controller when the Widget is disposed
     myController.dispose();
+
     super.dispose();
   }
 
@@ -66,7 +67,6 @@ class _FireBaseDBState extends State<FireBaseDB> {
   @override
   void initState() {
     documentReference = Firestore.instance.collection(widget.userName);
-    // TODO: implement initState
     super.initState();
     _result = fetchQueryResult();
     //fetchData();
@@ -92,131 +92,137 @@ class _FireBaseDBState extends State<FireBaseDB> {
   @override
   Widget build(BuildContext context) {
     // We will fill this out in the next step!
-    return Scaffold(
-      key: _scaffoldkey,
-      body: Builder(
-        builder: (context) => Container(
-              height: MediaQuery.of(context).size.height,
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: TextField(
-                        controller: myController,
-                        decoration: InputDecoration(
-                          hintText: "Write Movie Name",
-                        ),
+    return Builder(
+      builder: (context) => Container(
+            height: MediaQuery.of(context).size.height,
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: TextField(
+                      controller: myController,
+                      decoration: InputDecoration(
+                        hintText: "Write Movie Name",
                       ),
                     ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        RaisedButton(
-                          child: Text("Search"),
-                          color: Colors.green,
-                          onPressed: () {
-                            setState(() {
-                              searchQuery = myController.text;
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      RaisedButton(
+                        child: Text("Search"),
+                        color: Colors.green,
+                        onPressed: () {
+                          setState(() {
+                            searchQuery = myController.text;
 //                    fetchQueryResult();
-                              _result = fetchQueryResult();
-                            });
-                          },
-                        ),
-                        RaisedButton(
-                          child: Text("Clear"),
-                          color: Colors.red.shade400,
-                          onPressed: () {
-                            setState(() {
-                              myController.clear();
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 6,
-                    ),
-                    Container(
-                      height: 2,
-                      decoration: BoxDecoration(boxShadow: [
-                        BoxShadow(
-                            color: Colors.black26,
-                            offset: Offset(0, 4),
-                            blurRadius: .5)
-                      ]),
-                    ),
-                    Expanded(
-                      child: FutureBuilder(
-                        future: _result,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                                  ConnectionState.waiting ||
-                              snapshot.connectionState ==
-                                  ConnectionState.active) {
-                            return Center(child: CircularProgressIndicator());
-                          } else if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            print("Length: ${suggested.length}");
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.vertical,
-                              itemCount: suggested.length,
-                              itemBuilder: (context, index) {
-                                return gestureContainers(suggested[index]);
-                              },
-                            );
-                          }
+                            _result = fetchQueryResult();
+                          });
                         },
                       ),
+                      RaisedButton(
+                        child: Text("Clear"),
+                        color: Colors.red.shade400,
+                        onPressed: () {
+                          setState(() {
+                            myController.clear();
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  Text("Tap to recommend the movie.",style: TextStyle(color: Colors.grey.shade800,fontSize: 10),),
+                  Container(
+                    height: 4,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                      BoxShadow(
+                          color: Colors.black26,
+                          offset: Offset(0, 2),
+                          blurRadius: 1)
+                    ]),
+                  ),
+                  SizedBox(
+                    height: 2,
+                  ),
+                  Expanded(
+                    child: FutureBuilder(
+                      future: _result,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                                ConnectionState.waiting ||
+                            snapshot.connectionState ==
+                                ConnectionState.active) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.done) {
+                          print("Length: ${suggested.length}");
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            itemCount: suggested.length,
+                            itemBuilder: (context, index) {
+                              return gestureContainers(suggested[index]);
+                            },
+                          );
+                        }
+                      },
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-      ),
+          ),
     );
   }
 
   Widget gestureContainers(var s) {
-    return GestureDetector(
-      onTap: () {
-        setData(s);
-      },
-      child: Container(
-        height: 120,
-        margin: EdgeInsets.fromLTRB(12, 16, 12, 16),
+    bool flag = true;
+    return Visibility(
+      visible: flag,
+      child: GestureDetector(
+        onTap: () {
+          setData(s);
+          flag = false; //removing widget on tap
+        },
         child: Container(
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black12, offset: Offset(0, 8), blurRadius: 10)
-              ]),
-          child: Center(
-            child: ListTile(
-              title: Text(
-                s['title'],
-                maxLines: 1,
-              ),
-              leading: Image(
-                image: NetworkImageWithRetry(
-                  "http://image.tmdb.org/t/p/w500/" +
-                      s['poster_path'].toString(),
+          height: 120,
+          margin: EdgeInsets.fromLTRB(12, 16, 12, 16),
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black12,
+                      offset: Offset(0, 8),
+                      blurRadius: 10)
+                ]),
+            child: Center(
+              child: ListTile(
+                title: Text(
+                  s['title'],
+                  maxLines: 1,
                 ),
-                height: 80,
-                fit: BoxFit.cover,
-              ),
-              subtitle: Text(
-                s['overview'],
-                maxLines: 3,
+                leading: Image(
+                  image: NetworkImageWithRetry(
+                    "http://image.tmdb.org/t/p/w500/" +
+                        s['poster_path'].toString(),
+                  ),
+                  height: 80,
+                  fit: BoxFit.cover,
+                ),
+                subtitle: Text(
+                  s['overview'],
+                  maxLines: 3,
+                ),
               ),
             ),
           ),
@@ -292,11 +298,9 @@ class ItemList extends StatefulWidget {
 
 class _ItemListState extends State<ItemList> {
   List<DocumentSnapshot> movies;
-  StreamSubscription<QuerySnapshot> subscription;
-  Future _future;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     // final snapshot = Firestore.instance.collection('user1').snapshots();
     // subscription = snapshot.listen((data) {
@@ -312,28 +316,26 @@ class _ItemListState extends State<ItemList> {
     // });
   }
 
-  Future fetchData() {
-    final snapshot = Firestore.instance
-        .collection('user1')
-        .snapshots(); //getting the collection instance
-    subscription = snapshot.listen((data) {
-      //listening to data changes inside that collection
-      if (data.documents.length > 0) {
-        setState(() {
-          movies = data.documents;
-        });
-      }
-      print("printing");
+  // Future fetchData() {
+  //   final snapshot = Firestore.instance
+  //       .collection('user1')
+  //       .snapshots(); //getting the collection instance
+  //   subscription = snapshot.listen((data) {
+  //     //listening to data changes inside that collection
+  //     if (data.documents.length > 0) {
+  //       setState(() {
+  //         movies = data.documents;
+  //       });
+  //     }
+  //     print("printing");
 
-      print(movies.length);
-    });
-  }
+  //     print(movies.length);
+  //   });
+  // }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
-    // subscription?.cancel();
   }
 
   @override
@@ -349,7 +351,6 @@ class _ItemListState extends State<ItemList> {
             return new ListView(
               children:
                   snapshot.data.documents.map((DocumentSnapshot document) {
-                Movie movie = new Movie();
                 return Container(
                   height: 120,
                   margin: EdgeInsets.symmetric(horizontal: 12, vertical: 16),

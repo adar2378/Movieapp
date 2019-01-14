@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/firebaseTexter.dart';
 import 'package:movie_app/movielist.dart';
 
 void main() => runApp(MyApp());
@@ -9,20 +8,17 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp>
-    with SingleTickerProviderStateMixin {
+class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   TabController tabController;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     tabController = new TabController(vsync: this, length: 3);
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     tabController.dispose();
   }
@@ -45,7 +41,7 @@ class _MyAppState extends State<MyApp>
             Container(
               child: Text("data"),
             ),
-            FireBaseDB(),
+            //FireBaseDB(),
           ],
         ),
         bottomNavigationBar: TabBar(
