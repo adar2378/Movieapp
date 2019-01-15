@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/firebaseTexter.dart';
 import 'package:movie_app/newMovieList.dart';
 import 'userSelector.dart';
+import 'firebaseMessageTest.dart';
 import 'SoundBox.dart';
 import 'watchedMovie.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,13 +19,42 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   TabController tabController;
   double fracH;
   String titlebar;
+  CollectionReference collectionReference;
+  final FirebaseMessaging messaging = new FirebaseMessaging();
+  Color color;
   @override
   void initState() {
     titlebar = "Recommended";
-    // TODO: implement initState
+    color = Colors.blue.shade300;
+
+    setToken("user2");
     super.initState();
     tabController = new TabController(vsync: this, length: 4);
     tabController.addListener(getTitle);
+  }
+
+  Future<void> setToken(String name) async {
+    // TODO: implement for different users
+    final QuerySnapshot result = await Firestore.instance
+        .collection('devices')
+        .where('name', isEqualTo: name)
+        .getDocuments();
+    final List<DocumentSnapshot> documents = result.documents;
+    if (documents.isEmpty) {
+      collectionReference = Firestore.instance.collection("devices");
+      DocumentReference addTokens = collectionReference.document(name);
+
+      Map<String, String> tokenData;
+      messaging.getToken().then((token) {
+        tokenData = <String, String>{"name": name, "token": token};
+        addTokens.setData(tokenData).whenComplete(() {
+          print("Token added");
+        });
+      });
+    }
+    else{
+      print("Already exists");
+    }
   }
 
   void getTitle() {
@@ -30,15 +62,20 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
       switch (tabController.index) {
         case 0:
           titlebar = "Recommended";
+          color = Colors.blue.shade300;
           break;
         case 1:
+          color = Colors.green.shade300;
           titlebar = "Watched";
+
           break;
         case 2:
           titlebar = "Sound Box";
+          color = Colors.white;
           break;
         case 3:
           titlebar = "Add Movies";
+          color = Colors.white;
           break;
       }
     });
@@ -67,7 +104,8 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   Widget getMenu() {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.purple.shade300,
+        elevation: 0,
+        backgroundColor: color,
         title: Text(
           titlebar,
           style: TextStyle(color: Colors.black),
@@ -80,7 +118,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
         children: <Widget>[
           NewMovieList("user2"),
           WatchedMovie("user2"),
-          SoundBox(),
+          NotificationTest(),
           FireBaseDB("user2"),
         ],
       ),

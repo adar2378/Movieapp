@@ -48,7 +48,7 @@ class _BackDropRecState extends State<BackDropRec>
     ));
   }
 
-  static const _PANEL_HEADER_HEIGHT = 54.0;
+  static const _PANEL_HEADER_HEIGHT = 64.0;
 
   Widget _buildStack(BuildContext context, BoxConstraints constraints) {
     final Animation<RelativeRect> animation = _getPanelAnimation(constraints);
@@ -58,14 +58,14 @@ class _BackDropRecState extends State<BackDropRec>
         children: <Widget>[
           GestureDetector(
             onTap: () {
-              setState(() {
-                up = !up;
-                if (!up) {
-                  expandIcon = Icons.expand_more;
-                } else {
-                  expandIcon = Icons.expand_less;
-                }
-              });
+              // setState(() {
+              //   up = !up;
+              //   if (!up) {
+              //     expandIcon = Icons.expand_more;
+              //   } else {
+              //     expandIcon = Icons.expand_less;
+              //   }
+              // });
               _controller.fling(velocity: _isPanelVisible ? -1.0 : 1.0);
             },
             child: Hero(
@@ -132,119 +132,128 @@ class _BackDropRecState extends State<BackDropRec>
                     // borderRadius: const BorderRadius.only(
                     //     topLeft: const Radius.circular(16.0),
                     //     topRight: const Radius.circular(16.0)),
-                    child: Column(children: <Widget>[
-                      Container(
-                          height: _PANEL_HEADER_HEIGHT,
-                          child: Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
-                                Text(
-                                  "IMDB\n${widget.document['ImdbRating']}",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                
-                                Icon(
-                                  expandIcon,
-                                  color: Colors.white,
-                                ),
-                                
-                                Text("${widget.document['Runtime']} mins",
-                                    style: TextStyle(color: Colors.white))
-                              ],
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            height: 4,
+                            width: 36,
+                            child: Icon(
+                              Icons.remove,
+                              size: 36,
+                              color: Colors.green,
                             ),
-                          )),
-                      Expanded(
-                        flex: 1,
-                        child: FittedBox(
-                          fit: BoxFit.contain,
-                          alignment: Alignment.topCenter,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 4),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: <Widget>[
-                                      Text(
-                                        widget.document['Title'],
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 24,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      Text(
-                                        " ("+widget.document['Date']+")",
-                                        style: TextStyle(
-                                          color: Colors.white54,
-                                          fontSize: 18,
-                                          fontStyle: FontStyle.italic
-                                        ),
-                                        
-                                      ),
-                                    ],
-                                  )),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 4),
-                                child: Text(
-                                  '"' + widget.document['Tagline'] + '"',
-                                  style: TextStyle(
-                                      color: Colors.white70,
-                                      fontWeight: FontWeight.w200,
-                                      fontSize: 18,
-                                      fontStyle: FontStyle.italic),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                child: Text(
-                                  ("( " + widget.document['Genre'] + " )"),
-                                  style: TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w200),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 16,
-                              ),
-                              Text(
-                                "Plot",
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.white),
-                              ),
-                              Container(
-                                height: 2,
-                                width: 32,
-                                color: Colors.white70,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  widget.document['Overview'],
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w200),
-                                  textAlign: TextAlign.center,
-                                ),
-                              )
-                            ],
                           ),
-                        ),
-                      ),
-                    ]),
+                          Container(
+                              margin: EdgeInsets.only(bottom: 6),
+                              height: _PANEL_HEADER_HEIGHT,
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      "IMDB: ${widget.document['ImdbRating']}",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    Text("${widget.document['Runtime']} mins",
+                                        style: TextStyle(color: Colors.white))
+                                  ],
+                                ),
+                              )),
+                          Expanded(
+                            flex: 1,
+                            child: FittedBox(
+                              fit: BoxFit.contain,
+                              alignment: Alignment.topCenter,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 4),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: <Widget>[
+                                          Text(
+                                            widget.document['Title'],
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 24,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          Text(
+                                            " (" +
+                                                widget.document['Date'] +
+                                                ")",
+                                            style: TextStyle(
+                                                color: Colors.white54,
+                                                fontSize: 18,
+                                                fontStyle: FontStyle.italic),
+                                          ),
+                                        ],
+                                      )),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 4),
+                                    child: Text(
+                                      '"' + widget.document['Tagline'] + '"',
+                                      style: TextStyle(
+                                          color: Colors.white70,
+                                          fontWeight: FontWeight.w200,
+                                          fontSize: 18,
+                                          fontStyle: FontStyle.italic),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Text(
+                                      ("( " + widget.document['Genre'] + " )"),
+                                      style: TextStyle(
+                                          color: Colors.white70,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w200),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 16,
+                                  ),
+                                  Text(
+                                    "Plot",
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.white),
+                                  ),
+                                  Container(
+                                    height: 2,
+                                    width: 32,
+                                    color: Colors.white70,
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      widget.document['Overview'],
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w200),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ]),
                   ),
                 ),
               ),
