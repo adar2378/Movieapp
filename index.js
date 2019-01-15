@@ -17,7 +17,7 @@ exports.movieTrigger = functions.firestore.document('user2/{movieId}').onCreate(
 
         if (snapshots.empty) {
             console.log('No Devices');
-            return 0;
+            return true;
         }
         else {
             for (var tokenn of snapshots.docs) {
@@ -37,7 +37,7 @@ exports.movieTrigger = functions.firestore.document('user2/{movieId}').onCreate(
             }
 
 
-            return admin.messaging().sendToDevice(tokens, payload).then((response) => {
+            return admin.messaging().sendToDevice(tokens, payload).then(() => {
                 console.log('Pushed them all');
             }).catch((err) => {
                 console.log(err);

@@ -35,6 +35,17 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
 
   Future<void> setToken(String name) async {
     // TODO: implement for different users
+    messaging.configure(
+      onMessage: (Map<String, dynamic> msg) {
+        print("OnMessage");
+      },
+      onLaunch: (Map<String, dynamic> msg) {
+        print("onLaunch");
+      },
+      onResume: (Map<String, dynamic> msg) {
+        print("onResume");
+      },
+    );
     final QuerySnapshot result = await Firestore.instance
         .collection('devices')
         .where('name', isEqualTo: name)
@@ -51,8 +62,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
           print("Token added");
         });
       });
-    }
-    else{
+    } else {
       print("Already exists");
     }
   }
