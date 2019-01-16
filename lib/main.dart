@@ -4,6 +4,7 @@ import 'package:movie_app/newMovieList.dart';
 import 'userSelector.dart';
 import 'firebaseMessageTest.dart';
 import 'SoundBox.dart';
+import 'dart:convert';
 import 'watchedMovie.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -82,10 +83,12 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
       "CHANNLE NAME",
       "channelDescription",
     );
+   // Map<String,dynamic> response = jsonDecode(msg.toString());
+
     var iOS = new IOSNotificationDetails();
     var platform = new NotificationDetails(android, iOS);
     await flutterLocalNotificationsPlugin.show(
-        0, "This is title", "this is demo", platform);
+        0, msg['notification']['title'] + " was added",  msg['notification']['body'], platform);
   }
 
   void getTitle() {
