@@ -1,3 +1,5 @@
+
+
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
@@ -9,15 +11,20 @@ const admin = require('firebase-admin');
 // });
 
 admin.initializeApp(functions.config().firebase);
+
+const firestore = admin.firestore();
+firestore.settings({ timestampsInSnapshots: true });
+
+
 exports.movieTrigger = functions.firestore.document('user2/{movieId}').onCreate((snapshot, context) => {
-    msgData = snapshot.data();
+    const msgData = snapshot.data();
     console.log("This was a message:" + msgData.Title);
     admin.firestore().collection('devices').get().then((snapshots) => {
         var tokens = [];
 
         if (snapshots.empty) {
             console.log('No Devices');
-            return true;
+
         }
         else {
             for (var tokenn of snapshots.docs) {
@@ -31,14 +38,15 @@ exports.movieTrigger = functions.firestore.document('user2/{movieId}').onCreate(
                     "sound": "default"
                 },
                 "data": {
+                    "click_action": "FLUTTER_NOTIFICATION_CLICK",
                     "sendername": "Adar",
                     "message": "message from me"
                 }
             }
 
 
-            return admin.messaging().sendToDevice(tokens, payload).then(() => {
-                console.log('Pushed them all');
+            return admin.messaging().sendToDevice(tokens, payload).then((response) => {
+                console.log('Pushed them all' + response);
             }).catch((err) => {
                 console.log(err);
             });
@@ -47,4 +55,5 @@ exports.movieTrigger = functions.firestore.document('user2/{movieId}').onCreate(
 
         }
     })
+    return 0;
 });
