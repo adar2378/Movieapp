@@ -27,7 +27,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
     titlebar = "Recommended";
     color = Colors.blue.shade300;
 
-    setToken("user2");
+    setToken("user1");
     super.initState();
     tabController = new TabController(vsync: this, length: 4);
     tabController.addListener(getTitle);
@@ -37,13 +37,13 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
     // TODO: implement for different users
     messaging.configure(
       onMessage: (Map<String, dynamic> msg) {
-        print("OnMessage");
+        print("OnMessage $msg");
       },
       onLaunch: (Map<String, dynamic> msg) {
-        print("onLaunch");
+        print("onLaunch $msg");
       },
       onResume: (Map<String, dynamic> msg) {
-        print("onResume");
+        print("onResume $msg");
       },
     );
     final QuerySnapshot result = await Firestore.instance
