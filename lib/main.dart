@@ -7,6 +7,7 @@ import 'SoundBox.dart';
 import 'watchedMovie.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 void main() => runApp(MyApp());
 
@@ -32,11 +33,19 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
     tabController = new TabController(vsync: this, length: 4);
     tabController.addListener(getTitle);
   }
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      new FlutterLocalNotificationsPlugin();
 
   Future<void> setToken(String name) async {
     // TODO: implement for different users
+
+    var android = new AndroidInitializationSettings('mipmap/ic_launcher');
+    var ios = new IOSInitializationSettings();
+    var platform = new InitializationSettings(android, ios);
+    flutterLocalNotificationsPlugin.initialize(platform);
     messaging.configure(
       onMessage: (Map<String, dynamic> msg) {
+        showNotification(msg); //need to set notification locally for this
         print("OnMessage $msg");
       },
       onLaunch: (Map<String, dynamic> msg) {
@@ -65,6 +74,18 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
     } else {
       print("Already exists");
     }
+  }
+
+  showNotification(Map<String, dynamic> msg) async {
+    var android = new AndroidNotificationDetails(
+      'sdffds dsffds',
+      "CHANNLE NAME",
+      "channelDescription",
+    );
+    var iOS = new IOSNotificationDetails();
+    var platform = new NotificationDetails(android, iOS);
+    await flutterLocalNotificationsPlugin.show(
+        0, "This is title", "this is demo", platform);
   }
 
   void getTitle() {
