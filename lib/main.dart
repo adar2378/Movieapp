@@ -27,8 +27,11 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   final FirebaseMessaging messaging = new FirebaseMessaging();
   Color color;
   var brightness;
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin; 
   @override
   void initState() {
+    flutterLocalNotificationsPlugin =
+        new FlutterLocalNotificationsPlugin();
     titlebar = "Recommended";
     color = Colors.transparent;
     brightness = Brightness.light;
@@ -38,12 +41,9 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
     tabController.addListener(getTitle);
   }
 
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      new FlutterLocalNotificationsPlugin();
-
   Future<void> setToken(String name) async {
     // TODO: implement for different users
-
+    
     var android = new AndroidInitializationSettings('mipmap/ic_launcher');
     var ios = new IOSInitializationSettings();
     var platform = new InitializationSettings(android, ios);
@@ -103,23 +103,23 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
       switch (tabController.index) {
         case 0:
           titlebar = "Recommended";
-          
+
           brightness = Brightness.light;
           break;
         case 1:
           titlebar = "Watched";
-          
+
           brightness = Brightness.light;
           break;
         case 2:
           titlebar = "Sound Box";
-          
+
           brightness = Brightness.dark;
 
           break;
         case 3:
           titlebar = "Add Movies";
-          
+
           brightness = Brightness.dark;
           break;
       }
@@ -136,11 +136,10 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
-      statusBarColor: color,
-      statusBarIconBrightness: brightness
-      //or set color with: Color(0xFF0000FF)
-    ));
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
+        .copyWith(statusBarColor: color, statusBarIconBrightness: brightness
+            //or set color with: Color(0xFF0000FF)
+            ));
     return MaterialApp(
         debugShowCheckedModeBanner: true,
         title: 'Flutter Demo',

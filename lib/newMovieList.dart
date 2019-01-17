@@ -91,33 +91,40 @@ class _NewMovieListState extends State<NewMovieList>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Container(
-                        margin: EdgeInsets.only(left: 16),
-                        padding: EdgeInsets.all(4),
-                        height: 28,
-                        width: 138,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(35),
-                            color: Colors.green.shade300),
-                        //color: Colors.transparent,
-                        child: DropdownButton(
-                            value: _value,
-                            onChanged: (item) {
-                              changeValue(item);
-                            },
-                            //style: TextStyle(background: Paint),
-                            items: _items.map((String value) {
-                              return DropdownMenuItem(
-                                child: Container(
-                                  width: 106,
-                                  color: Colors.transparent,
-                                  child: Text(value),
-                                ),
-                                value: value,
-                              );
-                            }).toList()),
-                      ),
+                          margin: EdgeInsets.only(left: 16),
+                          padding: EdgeInsets.all(4),
+                          height: 28,
+                          width: 138,
+
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(35),
+                              color: Colors.white54),
+                          //color: Colors.transparent,
+                          child: DropdownButtonHideUnderline(
+
+                            child: DropdownButton(
+                                value: _value,
+                                style:
+                                    TextStyle(fontSize: 16, color: Colors.black),
+                                onChanged: (item) {
+                                  changeValue(item);
+                                },
+                                //style: TextStyle(background: Paint),
+                                items: _items.map((String value) {
+                                  return DropdownMenuItem(
+                                    child: Container(
+                                      width: 106,
+                                      color: Colors.transparent,
+                                      child: Text(value),
+                                    ),
+                                    value: value,
+                                  );
+                                }).toList()),
+                          ),
+                        ),
                       Container(
-                        height: MediaQuery.of(context).size.height - 202,
+                        margin: EdgeInsets.only(top: 16),
+                        height: MediaQuery.of(context).size.height - 166,
                         width: MediaQuery.of(context).size.width,
                         child: CupertinoScrollbar(
                           child: ListView(
@@ -179,7 +186,7 @@ class _NewMovieListState extends State<NewMovieList>
                                           leading: Hero(
                                               tag: document['Id'],
                                               child: Image(
-                                                image: NetworkImageWithRetry(
+                                                image: NetworkImage(
                                                   document['Poster'].toString(),
                                                 ),
                                                 height: 80,

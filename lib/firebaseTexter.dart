@@ -116,7 +116,7 @@ class _FireBaseDBState extends State<FireBaseDB> {
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: TextField(
                       controller: myController,
                       decoration: InputDecoration(
