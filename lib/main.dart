@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:movie_app/firebaseTexter.dart';
 import 'package:movie_app/newMovieList.dart';
 import 'userSelector.dart';
+import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
 import 'firebaseMessageTest.dart';
 import 'SoundBox.dart';
 import 'dart:convert';
@@ -24,16 +26,18 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   CollectionReference collectionReference;
   final FirebaseMessaging messaging = new FirebaseMessaging();
   Color color;
+  var brightness;
   @override
   void initState() {
     titlebar = "Recommended";
-    color = Colors.blue.shade300;
-
+    color = Colors.transparent;
+    brightness = Brightness.light;
     setToken("user1");
     super.initState();
     tabController = new TabController(vsync: this, length: 4);
     tabController.addListener(getTitle);
   }
+
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       new FlutterLocalNotificationsPlugin();
 
@@ -83,12 +87,15 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
       "CHANNLE NAME",
       "channelDescription",
     );
-   // Map<String,dynamic> response = jsonDecode(msg.toString());
+    // Map<String,dynamic> response = jsonDecode(msg.toString());
 
     var iOS = new IOSNotificationDetails();
     var platform = new NotificationDetails(android, iOS);
     await flutterLocalNotificationsPlugin.show(
-        0, msg['notification']['title'] + " was added",  msg['notification']['body'], platform);
+        0,
+        msg['notification']['title'] + " was added",
+        msg['notification']['body'],
+        platform);
   }
 
   void getTitle() {
@@ -96,20 +103,24 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
       switch (tabController.index) {
         case 0:
           titlebar = "Recommended";
-          color = Colors.blue.shade300;
+          
+          brightness = Brightness.light;
           break;
         case 1:
-          color = Colors.green.shade300;
           titlebar = "Watched";
-
+          
+          brightness = Brightness.light;
           break;
         case 2:
           titlebar = "Sound Box";
-          color = Colors.white;
+          
+          brightness = Brightness.dark;
+
           break;
         case 3:
           titlebar = "Add Movies";
-          color = Colors.white;
+          
+          brightness = Brightness.dark;
           break;
       }
     });
@@ -125,11 +136,16 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
+      statusBarColor: color,
+      statusBarIconBrightness: brightness
+      //or set color with: Color(0xFF0000FF)
+    ));
     return MaterialApp(
         debugShowCheckedModeBanner: true,
         title: 'Flutter Demo',
         theme: ThemeData(
-            canvasColor: Colors.transparent,
+            canvasColor: Colors.white,
             primarySwatch: Colors.blue,
             fontFamily: "Product San"),
         home: getMenu());
@@ -137,14 +153,14 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
 
   Widget getMenu() {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: color,
-        title: Text(
-          titlebar,
-          style: TextStyle(color: Colors.black),
-        ),
-      ),
+      // appBar: AppBar(
+      //   elevation: 0,
+      //   backgroundColor: color,
+      //   title: Text(
+      //     titlebar,
+      //     style: TextStyle(color: Colors.black),
+      //   ),
+      // ),
       resizeToAvoidBottomPadding: true,
       backgroundColor: Colors.white,
       body: TabBarView(
@@ -152,7 +168,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
         children: <Widget>[
           NewMovieList("user2"),
           WatchedMovie("user2"),
-          NotificationTest(),
+          SoundBox(),
           FireBaseDB("user2"),
         ],
       ),

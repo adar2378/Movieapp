@@ -50,6 +50,23 @@ class _BackDropRecState extends State<BackDropRec>
 
   static const _PANEL_HEADER_HEIGHT = 64.0;
 
+  String genreGenerator(List<dynamic> genreList){
+    String result = "";
+    for(int i = 0 ; i<genreList.length;i++){
+      if(genreList[i] == "All"){
+        continue;
+      }
+      else if(i == genreList.length - 2){
+        result = result + genreList[i];
+      }
+      else{
+        result = result + genreList[i] + ", ";
+      }
+    }
+    return result;
+
+  }
+
   Widget _buildStack(BuildContext context, BoxConstraints constraints) {
     final Animation<RelativeRect> animation = _getPanelAnimation(constraints);
     return new Container(
@@ -58,14 +75,6 @@ class _BackDropRecState extends State<BackDropRec>
         children: <Widget>[
           GestureDetector(
             onTap: () {
-              // setState(() {
-              //   up = !up;
-              //   if (!up) {
-              //     expandIcon = Icons.expand_more;
-              //   } else {
-              //     expandIcon = Icons.expand_less;
-              //   }
-              // });
               _controller.fling(velocity: _isPanelVisible ? -1.0 : 1.0);
             },
             child: Hero(
@@ -79,11 +88,12 @@ class _BackDropRecState extends State<BackDropRec>
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 20.0),
+            padding: EdgeInsets.only(top: 20),
             child: IconButton(
               icon: Icon(Icons.keyboard_arrow_left),
               color: Colors.green,
-              iconSize: 42,
+              highlightColor: Colors.green.shade100,
+              iconSize: 36,
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -93,25 +103,9 @@ class _BackDropRecState extends State<BackDropRec>
             rect: animation,
             child: SwipeDetector(
               onSwipeUp: () {
-                setState(() {
-                  up = !up;
-                  if (!up) {
-                    expandIcon = Icons.expand_more;
-                  } else {
-                    expandIcon = Icons.expand_less;
-                  }
-                });
                 _controller.fling(velocity: _isPanelVisible ? -1.0 : 1.0);
               },
               onSwipeDown: () {
-                setState(() {
-                  up = !up;
-                  if (!up) {
-                    expandIcon = Icons.expand_more;
-                  } else {
-                    expandIcon = Icons.expand_less;
-                  }
-                });
                 _controller.fling(velocity: _isPanelVisible ? -1.0 : 1.0);
               },
               swipeConfiguration: SwipeConfiguration(
@@ -146,6 +140,7 @@ class _BackDropRecState extends State<BackDropRec>
                           ),
                           Container(
                               margin: EdgeInsets.only(bottom: 6),
+                              width: MediaQuery.of(context).size.width,
                               height: _PANEL_HEADER_HEIGHT,
                               child: Center(
                                 child: Row(
@@ -162,7 +157,7 @@ class _BackDropRecState extends State<BackDropRec>
                                   ],
                                 ),
                               )),
-                          Expanded(
+                          Flexible(
                             flex: 1,
                             child: FittedBox(
                               fit: BoxFit.contain,
@@ -170,55 +165,67 @@ class _BackDropRecState extends State<BackDropRec>
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
-                                  Padding(
+                                  Container(
+                                      child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: <Widget>[
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        padding: const EdgeInsets.only(left: 4),
+                                        child: Text(
+                                          widget.document['Title'],
+                                          maxLines: 2,
+                                          softWrap: false,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 24,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                                  Visibility(
+                                    visible: widget.document['Tagline'].toString().isNotEmpty?true:false,
+                                                                      child: Container(
+                                      width: MediaQuery.of(context).size.width,
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 4),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: <Widget>[
-                                          Text(
-                                            widget.document['Title'],
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 24,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          Text(
-                                            " (" +
-                                                widget.document['Date'] +
-                                                ")",
-                                            style: TextStyle(
-                                                color: Colors.white54,
-                                                fontSize: 18,
-                                                fontStyle: FontStyle.italic),
-                                          ),
-                                        ],
-                                      )),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 4),
-                                    child: Text(
-                                      '"' + widget.document['Tagline'] + '"',
-                                      style: TextStyle(
-                                          color: Colors.white70,
-                                          fontWeight: FontWeight.w200,
-                                          fontSize: 18,
-                                          fontStyle: FontStyle.italic),
-                                      textAlign: TextAlign.center,
+                                      child: Text(
+                                        '"' + widget.document['Tagline'],
+                                        style: TextStyle(
+                                            color: Colors.white70,
+                                            fontWeight: FontWeight.w200,
+                                            fontSize: 18,
+                                            fontStyle: FontStyle.italic),
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
                                   ),
                                   Container(
                                     width: MediaQuery.of(context).size.width,
                                     child: Text(
-                                      ("( " + widget.document['Genre'] + " )"),
+                                      ("("+genreGenerator(widget.document['Genre'])+")"),
                                       style: TextStyle(
-                                          color: Colors.white70,
+                                          color: Colors.blue.shade200,
                                           fontSize: 12,
                                           fontWeight: FontWeight.w200),
                                       textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    margin: EdgeInsets.only(top: 4),
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Text(
+                                      "Year of release: " +
+                                          widget.document['Date'],
+                                      style: TextStyle(
+                                          color: Colors.white54,
+                                          fontSize: 16,
+                                          fontStyle: FontStyle.italic),
                                     ),
                                   ),
                                   SizedBox(
@@ -239,7 +246,7 @@ class _BackDropRecState extends State<BackDropRec>
                                   ),
                                   Container(
                                     width: MediaQuery.of(context).size.width,
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.all(4.0),
                                     child: Text(
                                       widget.document['Overview'],
                                       style: TextStyle(

@@ -97,10 +97,24 @@ class _FireBaseDBState extends State<FireBaseDB> {
             height: MediaQuery.of(context).size.height,
             color: Colors.white,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        height: 66,
+                        padding: const EdgeInsets.only(left: 16.0, top: 30),
+                        child: Text(
+                          "Add Movie",
+                          style: TextStyle(fontSize: 18),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ],
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: TextField(
@@ -138,7 +152,10 @@ class _FireBaseDBState extends State<FireBaseDB> {
                       ),
                     ],
                   ),
-                  Text("Tap to recommend the movie.",style: TextStyle(color: Colors.grey.shade800,fontSize: 10),),
+                  Text(
+                    "Tap to recommend the movie.",
+                    style: TextStyle(color: Colors.grey.shade800, fontSize: 10),
+                  ),
                   Container(
                     height: 4,
                     width: MediaQuery.of(context).size.width,
@@ -232,7 +249,7 @@ class _FireBaseDBState extends State<FireBaseDB> {
   }
 
   void setData(s) async {
-    Map<String, String> data;
+    Map<String, dynamic> data;
     _showSnackbar(s['title']);
     final response = await http.get('https://api.themoviedb.org/3/movie/' +
         s['id'].toString() +
@@ -240,15 +257,13 @@ class _FireBaseDBState extends State<FireBaseDB> {
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
       List<dynamic> genres = jsonResponse['genres'];
-      String genre = "";
+      List<String> genre = [];
       for (int i = 0; i < genres.length; i++) {
-        if (genres.length - 1 == i) {
-          genre = genre + genres[i]['name'];
-        } else {
-          genre = genre + genres[i]['name'] + ", ";
-        }
+        genre.add(genres[i]['name']);
+
         //  print("Genre" + genres[i]['name']);  http://www.omdbapi.com/?i=tt0295297&apikey=672fff09
       }
+      genre.add("All");
       print(genre);
       String imdbRating = "", rottenTomatoRating = "", year = "", awards = "";
       final imdbResponse = await http.get("http://www.omdbapi.com/?i=" +
@@ -266,7 +281,7 @@ class _FireBaseDBState extends State<FireBaseDB> {
             ratingList.length <= 1 ? "" : ratingList[1]['Value'];
         awards = imdbResponseBody['Awards'];
       }
-      data = <String, String>{
+      data = <String, dynamic>{
         "Title": jsonResponse['title'],
         "Genre": genre,
         "Poster":

@@ -3,11 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:core';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_image/network.dart';
 import 'backDropRec.dart';
 
 class NewMovieList extends StatefulWidget {
-  String userName;
+  final String userName;
 
   NewMovieList(this.userName);
 
@@ -19,10 +20,33 @@ class _NewMovieListState extends State<NewMovieList>
     with AutomaticKeepAliveClientMixin {
   Color color = Colors.black;
   int i;
+  String _value = null;
+  List<String> _items = new List<String>();
   @override
   void initState() {
     i = 0;
+    _items.addAll([
+      "All",
+      "Animation",
+      "Action",
+      "Adventure",
+      "Science Fiction",
+      "Drama",
+      "Family",
+      "Romance",
+      "Mystery",
+      "Horror",
+      "Fantasy"
+    ]);
+    _value = "All";
+    // _items.sort();
     super.initState();
+  }
+
+  void changeValue(String value) {
+    setState(() {
+      _value = value;
+    });
   }
 
   List colors = [Colors.black, Colors.blue.shade900, Colors.brown.shade900];
@@ -30,102 +54,157 @@ class _NewMovieListState extends State<NewMovieList>
 
   @override
   Widget build(BuildContext context) {
-    double maxheight = MediaQuery.of(context).size.height;
     print("Going in the build");
     return Container(
-      child: StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance
-            .collection(widget.userName)
-            .where("Watched", isEqualTo: "false")
-            .snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
-          switch (snapshot.hasData) {
-            case false:
-              return new Text('Loading ...');
-            default:
-              return Container(
-                color: Colors.blue.shade300,
-                constraints: BoxConstraints(maxHeight: maxheight),
-                child: CupertinoScrollbar(
-                                  child: new ListView(
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    scrollDirection: Axis.vertical,
-                    //shrinkWrap: true,
-                    children:
-                        snapshot.data.documents.map((DocumentSnapshot document) {
-                      return Container(
-                        height: 120,
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-                        child: Dismissible(
-                          background: Container(
-                            alignment: Alignment.centerLeft,
-                            decoration: BoxDecoration(
-                              color: Colors.green.shade300,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Padding(
-                                padding: EdgeInsets.only(left: 20),
-                                child: Text("Watched")),
-                            margin: EdgeInsets.symmetric(vertical: 16),
-                          ),
-                          key: Key(document['Title']),
-                          direction: DismissDirection.startToEnd,
-                          onDismissed: (direction) {
-                            document.reference.updateData({'Watched': "true"});
-                          },
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => BackDropRec(
-                                          document: document,
-                                        )),
-                              );
+      color: Colors.blue[300],
+      child: Column(
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                height: 66,
+                padding: const EdgeInsets.only(left: 16.0, top: 30),
+                child: Text(
+                  "Recommended",
+                  style: TextStyle(fontSize: 18),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+            ],
+          ),
+          StreamBuilder<QuerySnapshot>(
+            stream: Firestore.instance
+                .collection(widget.userName)
+                .where("Watched", isEqualTo: "false")
+                .where("Genre", arrayContains: _value)
+                .snapshots(),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError)
+                return new Text('Error: ${snapshot.error}');
+              switch (snapshot.hasData) {
+                case false:
+                  return Center(child: Text('Loading ...'));
+                default:
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(left: 16),
+                        padding: EdgeInsets.all(4),
+                        height: 28,
+                        width: 138,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(35),
+                            color: Colors.green.shade300),
+                        //color: Colors.transparent,
+                        child: DropdownButton(
+                            value: _value,
+                            onChanged: (item) {
+                              changeValue(item);
                             },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.black.withOpacity(.2),
-                                        offset: Offset(0, 8),
-                                        blurRadius: 10)
-                                  ]),
-                              child: Center(
-                                child: ListTile(
-                                  title: Text(
-                                    document['Title'],
-                                    style: TextStyle(color: colors[1]),
+                            //style: TextStyle(background: Paint),
+                            items: _items.map((String value) {
+                              return DropdownMenuItem(
+                                child: Container(
+                                  width: 106,
+                                  color: Colors.transparent,
+                                  child: Text(value),
+                                ),
+                                value: value,
+                              );
+                            }).toList()),
+                      ),
+                      Container(
+                        height: MediaQuery.of(context).size.height - 202,
+                        width: MediaQuery.of(context).size.width,
+                        child: CupertinoScrollbar(
+                          child: ListView(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            scrollDirection: Axis.vertical,
+                            //shrinkWrap: true,
+                            children: snapshot.data.documents
+                                .map((DocumentSnapshot document) {
+                              return Container(
+                                height: 120,
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 16),
+                                child: Dismissible(
+                                  background: Container(
+                                    alignment: Alignment.centerLeft,
+                                    decoration: BoxDecoration(
+                                      color: Colors.green.shade300,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Padding(
+                                        padding: EdgeInsets.only(left: 20),
+                                        child: Text("Watched")),
+                                    margin: EdgeInsets.symmetric(vertical: 16),
                                   ),
-                                  leading: Hero(
-                                      tag: document['Id'],
-                                      child: Image(
-                                        image: NetworkImageWithRetry(
-                                          document['Poster'].toString(),
+                                  key: Key(document['Title']),
+                                  direction: DismissDirection.startToEnd,
+                                  onDismissed: (direction) {
+                                    document.reference
+                                        .updateData({'Watched': "true"});
+                                  },
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => BackDropRec(
+                                                  document: document,
+                                                )),
+                                      );
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black
+                                                    .withOpacity(.2),
+                                                offset: Offset(0, 8),
+                                                blurRadius: 10)
+                                          ]),
+                                      child: Center(
+                                        child: ListTile(
+                                          title: Text(
+                                            document['Title'],
+                                            style: TextStyle(color: colors[1]),
+                                          ),
+                                          leading: Hero(
+                                              tag: document['Id'],
+                                              child: Image(
+                                                image: NetworkImageWithRetry(
+                                                  document['Poster'].toString(),
+                                                ),
+                                                height: 80,
+                                                fit: BoxFit.cover,
+                                              )),
+                                          subtitle: Text(
+                                            document['Overview'],
+                                            maxLines: 3,
+                                          ),
                                         ),
-                                        height: 80,
-                                        fit: BoxFit.cover,
-                                      )),
-                                  subtitle: Text(
-                                    document['Overview'],
-                                    maxLines: 3,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
+                              );
+                            }).toList(),
                           ),
                         ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              );
-          }
-        },
+                      ),
+                    ],
+                  );
+              }
+            },
+          ),
+        ],
       ),
     );
   }

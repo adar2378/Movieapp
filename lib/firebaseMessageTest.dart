@@ -9,18 +9,16 @@ class NotificationTest extends StatefulWidget {
 class _NotificationTestState extends State<NotificationTest> {
   final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
 
+  @override
+  void initState() {
+    firebaseMessaging.getToken().then((token) {
+      print(token);
+    });
+    super.initState();
+  }
 
   @override
-    void initState() {
-      firebaseMessaging.getToken().then((token){
-        print(token);
-      });
-      super.initState();
-    }
-  @override
   Widget build(BuildContext context) {
-    return Container(
-      
-    );
+    return Container();
   }
 }

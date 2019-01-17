@@ -16,6 +16,7 @@ dependencies:
   flutter:
     sdk: flutter
   cloud_firestore:
+  flutter_statusbar_manager: ^1.0.2
   firebase_messaging:
   flutter_local_notifications: ^0.4.4+2
   audioplayer:

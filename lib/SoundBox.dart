@@ -34,20 +34,22 @@ class _SoundBoxState extends State<SoundBox> {
     return Container(
       height: MediaQuery.of(context).size.height,
       child: Stack(alignment: Alignment.topCenter, children: <Widget>[
-        Positioned(
-          top: MediaQuery.of(context).size.height / 2,
-          child: RaisedButton(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(45)),
-            onPressed: () {
-              audioCache.play("ay.mp3");
-            },
-            color: Colors.green.shade200,
-            child: Text("Play"),
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              height: 66,
+              padding: const EdgeInsets.only(left: 16.0, top: 30),
+              child: Text(
+                "Sound Box",
+                style: TextStyle(fontSize: 18),
+                textAlign: TextAlign.left,
+              ),
+            ),
+          ],
         ),
         Positioned(
-          top: MediaQuery.of(context).size.height / 2 - 130,
+          top: MediaQuery.of(context).size.height / 2 - 60,
           right: MediaQuery.of(context).size.width / 2 - 60,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(60),
@@ -64,7 +66,7 @@ class _SoundBoxState extends State<SoundBox> {
           ),
         ),
         Positioned(
-          bottom: MediaQuery.of(context).size.height / 2,
+          top: MediaQuery.of(context).size.height / 2 + 90,
           child: RaisedButton(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(45)),
@@ -76,7 +78,19 @@ class _SoundBoxState extends State<SoundBox> {
           ),
         ),
         Positioned(
-          right: MediaQuery.of(context).size.width / 2 + 80,
+          bottom: MediaQuery.of(context).size.height / 2 + 30,
+          child: RaisedButton(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(45)),
+            onPressed: () {
+              audioCache.play("ay.mp3");
+            },
+            color: Colors.green.shade200,
+            child: Text("Play"),
+          ),
+        ),
+        Positioned(
+          right: MediaQuery.of(context).size.width / 2 + 90,
           bottom: MediaQuery.of(context).size.height / 2 - 90,
           child: RaisedButton(
             shape:
@@ -89,7 +103,7 @@ class _SoundBoxState extends State<SoundBox> {
           ),
         ),
         Positioned(
-          left: MediaQuery.of(context).size.width / 2 + 80,
+          left: MediaQuery.of(context).size.width / 2 + 90,
           bottom: MediaQuery.of(context).size.height / 2 - 90,
           child: RaisedButton(
             shape:
