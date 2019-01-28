@@ -15,10 +15,11 @@ admin.initializeApp(functions.config().firebase);
 const firestore = admin.firestore();
 firestore.settings({ timestampsInSnapshots: true });
 
-
+var movieId = "";
 exports.movieTrigger = functions.firestore.document('user2/{movieId}').onCreate((snapshot, context) => {
     const msgData = snapshot.data();
     console.log("This was a message:" + msgData.Title);
+    console.log(movieId);
     admin.firestore().collection('devices').get().then((snapshots) => {
         var tokens = [];
 
