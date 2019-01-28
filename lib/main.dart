@@ -54,6 +54,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
         print("OnMessage $msg");
       },
       onLaunch: (Map<String, dynamic> msg) {
+        
         print("onLaunch $msg");
       },
       onResume: (Map<String, dynamic> msg) {

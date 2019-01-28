@@ -61,6 +61,9 @@ class _WatchedMovieState extends State<WatchedMovie>
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError)
                 return new Text('Error: ${snapshot.error}');
+              else if (snapshot.connectionState == ConnectionState.waiting) {
+                return Container();
+              }
               switch (snapshot.hasData ||
                   snapshot.connectionState == ConnectionState.done) {
                 case false:

@@ -1,7 +1,6 @@
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/backdropMovie.dart';
-import 'package:scrollable_bottom_sheet/scrollable_bottom_sheet.dart';
 import 'package:swipedetector/swipedetector.dart';
 import 'movie.dart';
 import 'package:http/http.dart' as http;

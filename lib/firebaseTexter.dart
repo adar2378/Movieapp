@@ -265,7 +265,7 @@ class _FireBaseDBState extends State<FireBaseDB> {
       }
       genre.add("All");
       print(genre);
-      String imdbRating = "", rottenTomatoRating = "", year = "", awards = "";
+      String imdbRating = "", rottenTomatoRating = "", year = "", awards = "", director = "";
       final imdbResponse = await http.get("http://www.omdbapi.com/?i=" +
           jsonResponse['imdb_id'] +
           "&apikey=672fff09");
@@ -280,6 +280,8 @@ class _FireBaseDBState extends State<FireBaseDB> {
         rottenTomatoRating =
             ratingList.length <= 1 ? "" : ratingList[1]['Value'];
         awards = imdbResponseBody['Awards'];
+        director = imdbResponseBody['Director'];
+
       }
       data = <String, dynamic>{
         "Title": jsonResponse['title'],
@@ -294,6 +296,7 @@ class _FireBaseDBState extends State<FireBaseDB> {
         "Awards": awards,
         "ImdbRating": imdbRating,
         "RottenTomatoes": rottenTomatoRating,
+        "Director" : director,
         "Watched": "false"
       };
     }

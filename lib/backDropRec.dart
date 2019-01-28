@@ -1,10 +1,11 @@
 import 'dart:ui';
-
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:swipedetector/swipedetector.dart';
-
+import 'award_icon_icons.dart';
 import 'dart:core';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_image/network.dart';
 
 class BackDropRec extends StatefulWidget {
   final DocumentSnapshot document;
@@ -13,6 +14,16 @@ class BackDropRec extends StatefulWidget {
   @override
   _BackDropRecState createState() => _BackDropRecState();
 }
+
+var color = Colors.green.shade300;
+
+final String assetName = 'assets/minus.svg';
+final Widget svg = new SvgPicture.asset(
+  assetName,
+  semanticsLabel: 'minus sign',
+  width: 36,
+  height: 12,
+);
 
 class _BackDropRecState extends State<BackDropRec>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
@@ -48,23 +59,20 @@ class _BackDropRecState extends State<BackDropRec>
     ));
   }
 
-  static const _PANEL_HEADER_HEIGHT = 64.0;
+  static const _PANEL_HEADER_HEIGHT = 94.0;
 
-  String genreGenerator(List<dynamic> genreList){
+  String genreGenerator(List<dynamic> genreList) {
     String result = "";
-    for(int i = 0 ; i<genreList.length;i++){
-      if(genreList[i] == "All"){
+    for (int i = 0; i < genreList.length; i++) {
+      if (genreList[i] == "All") {
         continue;
-      }
-      else if(i == genreList.length - 2){
+      } else if (i == genreList.length - 2) {
         result = result + genreList[i];
-      }
-      else{
+      } else {
         result = result + genreList[i] + ", ";
       }
     }
     return result;
-
   }
 
   Widget _buildStack(BuildContext context, BoxConstraints constraints) {
@@ -76,15 +84,21 @@ class _BackDropRecState extends State<BackDropRec>
           GestureDetector(
             onTap: () {
               _controller.fling(velocity: _isPanelVisible ? -1.0 : 1.0);
+              if (color == Colors.green.shade300) {
+                color = Colors.green.shade900;
+              } else {
+                color = Colors.green.shade300;
+              }
             },
             child: Hero(
               tag: "${widget.document['Id']}",
-              child: Image.network(
-                widget.document['Poster'].toString(),
-                fit: BoxFit.cover,
-                height: double.infinity,
-                width: double.infinity,
-              ),
+              child: Image(
+                  fit: BoxFit.cover,
+                  height: double.infinity,
+                  width: double.infinity,
+                  image: NetworkImageWithRetry(
+                    widget.document['Poster'].toString(),
+                  )),
             ),
           ),
           Padding(
@@ -104,9 +118,19 @@ class _BackDropRecState extends State<BackDropRec>
             child: SwipeDetector(
               onSwipeUp: () {
                 _controller.fling(velocity: _isPanelVisible ? -1.0 : 1.0);
+                if (color == Colors.green.shade300) {
+                  color = Colors.green.shade900;
+                } else {
+                  color = Colors.green.shade300;
+                }
               },
               onSwipeDown: () {
                 _controller.fling(velocity: _isPanelVisible ? -1.0 : 1.0);
+                if (color == Colors.green.shade300) {
+                  color = Colors.green.shade900;
+                } else {
+                  color = Colors.green.shade300;
+                }
               },
               swipeConfiguration: SwipeConfiguration(
                   verticalSwipeMinVelocity: 100.0,
@@ -120,7 +144,7 @@ class _BackDropRecState extends State<BackDropRec>
                     topLeft: const Radius.circular(16.0),
                     topRight: const Radius.circular(16.0)),
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                  filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                   child: Material(
                     color: Colors.black26,
                     // borderRadius: const BorderRadius.only(
@@ -129,19 +153,22 @@ class _BackDropRecState extends State<BackDropRec>
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
+                          // Container(
+                          //   height: 10,
+                          //   child: Icon(Icons.remove,color: Colors.green.shade300,size: 36,),
+                          // ),
                           Container(
+                            decoration: BoxDecoration(
+                                color: color,
+                                borderRadius: BorderRadius.circular(15)),
+                            margin: EdgeInsets.only(top: 8),
                             height: 4,
-                            width: 36,
-                            child: Icon(
-                              Icons.remove,
-                              size: 36,
-                              color: Colors.green,
-                            ),
+                            width: 32,
                           ),
                           Container(
                               margin: EdgeInsets.only(bottom: 6),
                               width: MediaQuery.of(context).size.width,
-                              height: _PANEL_HEADER_HEIGHT,
+                              height: _PANEL_HEADER_HEIGHT - 54,
                               child: Center(
                                 child: Row(
                                   mainAxisAlignment:
@@ -157,6 +184,38 @@ class _BackDropRecState extends State<BackDropRec>
                                   ],
                                 ),
                               )),
+                          Container(
+                              margin: EdgeInsets.only(bottom: 6),
+                              width: MediaQuery.of(context).size.width,
+                              height: 30,
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(
+                                      AwardIcon.award,
+                                      size: 26,
+                                      color: Colors.green.shade300,
+                                    ),
+                                    Flexible(
+                                      child: RichText(
+                                          textAlign: TextAlign.left,
+                                          text: TextSpan(
+                                            text:
+                                                "${widget.document['Awards']}",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          )),
+                                    ),
+                                  ],
+                                ),
+                              )),
+
+                          SizedBox(
+                            height: 12,
+                          ),
                           Flexible(
                             flex: 1,
                             child: FittedBox(
@@ -188,17 +247,21 @@ class _BackDropRecState extends State<BackDropRec>
                                     ],
                                   )),
                                   Visibility(
-                                    visible: widget.document['Tagline'].toString().isNotEmpty?true:false,
-                                                                      child: Container(
+                                    visible: widget.document['Tagline']
+                                            .toString()
+                                            .isNotEmpty
+                                        ? true
+                                        : false,
+                                    child: Container(
                                       width: MediaQuery.of(context).size.width,
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 4),
                                       child: Text(
-                                        '"' + widget.document['Tagline'],
+                                        '"' + widget.document['Tagline'] + '"',
                                         style: TextStyle(
                                             color: Colors.white70,
                                             fontWeight: FontWeight.w200,
-                                            fontSize: 18,
+                                            fontSize: 16,
                                             fontStyle: FontStyle.italic),
                                         textAlign: TextAlign.center,
                                       ),
@@ -207,7 +270,10 @@ class _BackDropRecState extends State<BackDropRec>
                                   Container(
                                     width: MediaQuery.of(context).size.width,
                                     child: Text(
-                                      ("("+genreGenerator(widget.document['Genre'])+")"),
+                                      ("(" +
+                                          genreGenerator(
+                                              widget.document['Genre']) +
+                                          ")"),
                                       style: TextStyle(
                                           color: Colors.blue.shade200,
                                           fontSize: 12,
@@ -215,17 +281,52 @@ class _BackDropRecState extends State<BackDropRec>
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
                                   Container(
                                     alignment: Alignment.center,
                                     margin: EdgeInsets.only(top: 4),
                                     width: MediaQuery.of(context).size.width,
-                                    child: Text(
-                                      "Year of release: " +
-                                          widget.document['Date'],
-                                      style: TextStyle(
-                                          color: Colors.white54,
-                                          fontSize: 16,
-                                          fontStyle: FontStyle.italic),
+                                    child: RichText(
+                                      text: TextSpan(
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontStyle: FontStyle.italic),
+                                          text: "Year of release: ",
+                                          children: [
+                                            TextSpan(
+                                              text: widget.document['Date'],
+                                              style: TextStyle(
+                                                  color: Colors.white70,
+                                                  fontSize: 16,
+                                                  fontStyle: FontStyle.italic),
+                                            )
+                                          ]),
+                                    ),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    margin: EdgeInsets.only(top: 4),
+                                    width: MediaQuery.of(context).size.width,
+                                    child: RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontStyle: FontStyle.italic),
+                                          text: "Director: ",
+                                          children: [
+                                            TextSpan(
+                                              text: widget.document['Director'],
+                                              style: TextStyle(
+                                                  color: Colors.white70,
+                                                  fontSize: 16,
+                                                  fontStyle: FontStyle.italic),
+                                            )
+                                          ]),
                                     ),
                                   ),
                                   SizedBox(

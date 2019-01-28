@@ -94,7 +94,7 @@ class _NewMovieListState extends State<NewMovieList>
                           margin: EdgeInsets.only(left: 16),
                           padding: EdgeInsets.all(4),
                           height: 28,
-                          width: 138,
+                          width: 165,
 
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(35),
@@ -112,8 +112,10 @@ class _NewMovieListState extends State<NewMovieList>
                                 //style: TextStyle(background: Paint),
                                 items: _items.map((String value) {
                                   return DropdownMenuItem(
+
                                     child: Container(
-                                      width: 106,
+                                      padding:EdgeInsets.only(left: 6),
+                                      width: 130,
                                       color: Colors.transparent,
                                       child: Text(value),
                                     ),
@@ -136,7 +138,7 @@ class _NewMovieListState extends State<NewMovieList>
                               return Container(
                                 height: 120,
                                 margin: EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 16),
+                                    horizontal: 12, vertical: 10),
                                 child: Dismissible(
                                   background: Container(
                                     alignment: Alignment.centerLeft,
@@ -174,8 +176,8 @@ class _NewMovieListState extends State<NewMovieList>
                                             BoxShadow(
                                                 color: Colors.black
                                                     .withOpacity(.2),
-                                                offset: Offset(0, 8),
-                                                blurRadius: 10)
+                                                offset: Offset(0, 5),
+                                                blurRadius: 8)
                                           ]),
                                       child: Center(
                                         child: ListTile(

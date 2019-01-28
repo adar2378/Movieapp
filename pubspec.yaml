@@ -25,11 +25,11 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
   swipedetector: ^1.2.0
-  scrollable_bottom_sheet: ^0.0.7
   http: ^0.12.0
   flutter_image: ^1.0.0
   auto_size_text: ^0.3.0
   color: any
+  flutter_svg: ^0.10.3
   
 
 dev_dependencies:
@@ -51,6 +51,7 @@ flutter:
   assets:
     - images/titanic.jpg
     - assets/ay.mp3
+    - assets/minus.svg
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -72,6 +73,10 @@ flutter:
     - family: Product San
       fonts:
         - asset: fonts/Product_Sans_Regular.ttf
+    - family: AwardIcon
+      fonts:
+       - asset: fonts/AwardIcon.ttf
+
   # fonts:
   #   - family: Schyler
   #     fonts:
